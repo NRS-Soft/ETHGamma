@@ -78,14 +78,21 @@ function loadDefault() {
 }
 
 function generateTransaction() {
-  if (decryptedAccount.hasOwnProperty("signTransaction")) {
+  const to = document.getElementById("toAddress").value;
+  const value = document.getElementById("amount").value;
+  console.log(to, value);
+
+  if (
+    decryptedAccount.hasOwnProperty("signTransaction") &&
+    to !== "" &&
+    value !== ""
+  ) {
+    $("#submit-error").remove();
     decryptedAccount
       .signTransaction({
         from: decryptedAccount.address,
-        to: document.getElementById("toAddress").value,
-        value: web3.utils.toHex(
-          web3.utils.toWei(document.getElementById("amount").value, "ether")
-        ),
+        to,
+        value: web3.utils.toHex(web3.utils.toWei(value, "ether")),
         gas: 200000,
         chainId: 3,
       })
@@ -100,6 +107,18 @@ function generateTransaction() {
         );
       });
   } else {
+    $("#submit-error").remove();
+
+    $(`<div id="submit-error"
+    style="
+    color: red;
+    font-weight: 700;
+    display: inline;
+    margin-left: 10px;
+    vertical-align: -webkit-baseline-middle;
+    ">
+    Missing file or form input
+  </div>`).insertAfter("button.is-link");
   }
 }
 
