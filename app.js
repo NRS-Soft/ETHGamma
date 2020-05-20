@@ -15,21 +15,38 @@ function loadKeystore(event) {
         json,
         document.getElementById("password").value
       );
+      fileSelector.value = null;
+      resetErrorMsg();
       $("#address").html(
         `<strong>Dirección cargada:</strong> ${decryptedAccount.address}`
       );
     } catch (e) {
-      $("#address").html(`<strong style="color:red;">${e.message}</strong>`);
+      fileSelector.value = null;
+      handleError(e);
+      $("#address").html(``);
     }
   });
 }
 
 function resetKeystore() {
+  fileSelector.value = null;
   decryptedAccount = {};
   $("#address").html(``);
+  resetErrorMsg();
+}
+
+function handleError(e) {
+  $("#password").addClass("is-danger");
+  $(`<p class='help is-danger'>${e.message}</p>`).insertAfter("#password");
+}
+
+function resetErrorMsg() {
+  $("#password").removeClass("is-danger");
+  $(".help").remove();
 }
 
 function loadDefault() {
+  fileSelector.value = null;
   decryptedAccount = web3.eth.accounts.decrypt(
     {
       version: 3,
@@ -57,6 +74,7 @@ function loadDefault() {
   $("#address").html(
     `<strong>Dirección cargada:</strong> ${decryptedAccount.address}`
   );
+  resetErrorMsg();
 }
 
 function generateTransaction() {
