@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generador de transferencias</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="bulma/css/bulma.css" />
+  </head>
+  <body>
+    <section class="hero is-link is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Generador de Transacciones</h1>
+          <p class="subtitle">
+            Genera los bits necesarios para transmitir una transaccion fuera de
+            internet
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="is-medium" style="margin-top: 2rem; padding: 0 20px;">
+      <div class="container">
+        <div class="field">
+          <label class="label">Keystore File</label>
+          <div class="control">
+            <div class="file">
+              <label class="file-label">
+                <input class="file-input" id="keystore" type="file" />
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Choose a file…
+                  </span>
+                </span>
+                <div
+                  id="address"
+                  style="margin: auto auto; margin-left: 15px;"
+                ></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Destinatario</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              id="toAddress"
+              placeholder="Dirección ETH"
+            />
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Monto</label>
+          <div class="control">
+            <input
+              class="input"
+              type="number"
+              id="amount"
+              placeholder="Monto en ETH"
+            />
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" onclick="generateTransaction()">
+              Generar transacción
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="is-medium" style="margin-top: 2rem;">
+      <div class="container">
+        <pre
+          id="rawTx"
+          style="width: 100%; word-wrap: break-word; white-space: pre-wrap;"
+        ></pre>
+        <pre
+          id="bits"
+          style="width: 100%; word-wrap: break-word; white-space: pre-wrap;"
+        ></pre>
+      </div>
+    </section>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.js"
+      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.js"
+      integrity="sha256-4t66lp3GSr4xP9BbUtQuwoG+S+Rg4Dkhm1xK5L0E09w="
+      crossorigin="anonymous"
+    ></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
