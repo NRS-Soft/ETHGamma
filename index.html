@@ -22,18 +22,35 @@
 
     <section class="is-medium" style="margin-top: 2rem; padding: 0 20px;">
       <div class="container">
+        <label class="label">Keystore File</label>
         <div class="field">
-          <label class="label">Keystore File</label>
           <div class="control">
-            <div class="file">
+            <button
+              class="button"
+              onclick="loadDefault()"
+              style="margin-right: 10px;"
+            >
+              Usar default
+            </button>
+          </div>
+        </div>
+        <div class="control">
+          <input
+            class="input"
+            type="password"
+            id="password"
+            style="margin-right: 10px; width: 400px;"
+            placeholder="Ingresar clave de keystore"
+          />
+        </div>
+        <div class="field">
+          <div class="control" style="margin-top: 10px;">
+            <div class="file has-name">
               <label class="file-label">
                 <input class="file-input" id="keystore" type="file" />
                 <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-upload"></i>
-                  </span>
-                  <span class="file-label">
-                    Choose a file…
+                  <span class="file-label"
+                    >Elegir un archivo keystore v3 JSON
                   </span>
                 </span>
                 <div
@@ -42,6 +59,13 @@
                 ></div>
               </label>
             </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <button class="button is-danger" onclick="resetKeystore()">
+              Reset
+            </button>
           </div>
         </div>
 

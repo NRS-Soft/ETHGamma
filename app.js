@@ -8,41 +8,93 @@ fileSelector.addEventListener("change", (event) => loadKeystore(event));
 let decryptedAccount = {};
 function loadKeystore(event) {
   const [file] = event.target.files;
+  $("#fileName").text(file.name);
   readJSON(file, (json) => {
-    decryptedAccount = web3.eth.accounts.decrypt(json, "Password");
-    $("#address").html(
-      `<strong>Dirección cargada:</strong> ${decryptedAccount.address}`
-    );
+    try {
+      decryptedAccount = web3.eth.accounts.decrypt(
+        json,
+        document.getElementById("password").value
+      );
+      $("#address").html(
+        `<strong>Dirección cargada:</strong> ${decryptedAccount.address}`
+      );
+    } catch (e) {
+      $("#address").html(`<strong style="color:red;">${e.message}</strong>`);
+    }
   });
 }
 
+function resetKeystore() {
+  decryptedAccount = {};
+  $("#address").html(``);
+}
+
+function loadDefault() {
+  decryptedAccount = web3.eth.accounts.decrypt(
+    {
+      version: 3,
+      id: "7b5e3d23-96a5-4c26-8187-d42dde5b6b57",
+      address: "e07cbf2df31eb6f1af46df5ca0f703c1a689c576",
+      crypto: {
+        ciphertext:
+          "41b23f37cbc3d102295443f7a554685d1fd1b997d4ed8e74d687491df97466d2",
+        cipherparams: { iv: "9285f7cd9abb6918386b208e456e9744" },
+        cipher: "aes-128-ctr",
+        kdf: "scrypt",
+        kdfparams: {
+          dklen: 32,
+          salt:
+            "c9ea971a8e25ec0b1a69ad73267c931824f00ac3f5784ffc82c8bd2ebba61ae0",
+          n: 8192,
+          r: 8,
+          p: 1,
+        },
+        mac: "6489a7dfb93fa50a0502116804bf1dd47972c6be61db74cc50ec4439f97aa76a",
+      },
+    },
+    "Password"
+  );
+  $("#address").html(
+    `<strong>Dirección cargada:</strong> ${decryptedAccount.address}`
+  );
+}
+
 function generateTransaction() {
-  decryptedAccount
-    .signTransaction({
-      from: decryptedAccount.address,
-      to: document.getElementById("toAddress").value,
-      value: web3.utils.toHex(
-        web3.utils.toWei(document.getElementById("amount").value, "ether")
-      ),
-      gas: 200000,
-      chainId: 3,
-    })
-    .then((signedTx) => {
-      const bytes = web3.utils.hexToBytes(signedTx.rawTransaction);
-      $("#rawTx").html(`Transaction in HEX:\n${signedTx.rawTransaction}`);
-      const bits = ByteArrayToBitSequence(bytes);
-      $("#bits").text(
-        `Transaction in Bits:\nCantidad de bits: ${bits.length}\n${bits.join(
-          ""
-        )}`
-      );
-    });
+  if (decryptedAccount.hasOwnProperty("signTransaction")) {
+    decryptedAccount
+      .signTransaction({
+        from: decryptedAccount.address,
+        to: document.getElementById("toAddress").value,
+        value: web3.utils.toHex(
+          web3.utils.toWei(document.getElementById("amount").value, "ether")
+        ),
+        gas: 200000,
+        chainId: 3,
+      })
+      .then((signedTx) => {
+        const bytes = web3.utils.hexToBytes(signedTx.rawTransaction);
+        $("#rawTx").html(`Transaction in HEX:\n${signedTx.rawTransaction}`);
+        const bits = ByteArrayToBitSequence(bytes);
+        $("#bits").text(
+          `Transaction in Bits:\nCantidad de bits: ${bits.length}\n${bits.join(
+            ""
+          )}`
+        );
+      });
+  } else {
+  }
 }
 
 function readJSON(file, cb) {
   const reader = new FileReader();
   reader.addEventListener("load", (event) => {
-    cb(JSON.parse(event.target.result));
+    try {
+      cb(JSON.parse(event.target.result));
+    } catch (e) {
+      $("#address").html(
+        `<strong style="color:red;">No es un archivo JSON</strong>`
+      );
+    }
   });
   reader.readAsText(file);
 }
@@ -52,7 +104,6 @@ function ByteArrayToBitSequence(bytes) {
   bytes.map((byte) => {
     for (var i = 7; i >= 0; i--) {
       bits.push(byte & (1 << i) ? 1 : 0);
-      // do something with the bit (push to an array if you want a sequence)
     }
   });
   return bits;
